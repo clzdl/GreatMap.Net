@@ -22,22 +22,22 @@ using System.Windows.Forms;
 namespace Demo.GdMap.WindowForms
 {
    public partial class MainForm : Form
-   {  
+   {
       // layers
       readonly GMapOverlay top = new GMapOverlay();
-      internal readonly GMapOverlay objectsLay= new GMapOverlay("objects");
+      internal readonly GMapOverlay objectsLay = new GMapOverlay("objects");
       internal readonly GMapOverlay routesLay = new GMapOverlay("routes");
       internal readonly GMapOverlay markersLay = new GMapOverlay("markers"); //放置marker的图层
       BackgroundWorker flightWorker = new BackgroundWorker();      //
-      
+
       Hashtable htPoints = new Hashtable();
       public MainForm()
-      {  
-               
+      {
+
          InitializeComponent();
-            
+
       }
-     
+
       private void MainForm_Load(object sender, EventArgs e)
       {
          SplashScreen splash = new SplashScreen();
@@ -47,7 +47,8 @@ namespace Demo.GdMap.WindowForms
             MainMap.Manager.Mode = AccessMode.CacheOnly;
             GMap.NET.GMaps.Instance.ImportFromGMDB(Application.StartupPath + "/NetMapCache/TileDBv5/en/Data.gmdb");
          }
-         else {
+         else
+         {
             MainMap.CacheLocation = Application.StartupPath + "/NetMapCache";
          }
 
@@ -81,13 +82,13 @@ namespace Demo.GdMap.WindowForms
          this.WindowState = FormWindowState.Normal;      //打开主界面
 
       }
-      
+
 
       void mapControl_MouseClick(object sender, MouseEventArgs e)
       {
          if (e.Button == System.Windows.Forms.MouseButtons.Left && e.Clicks > 1)
          {
-         
+
          }
       }
 
@@ -143,7 +144,7 @@ namespace Demo.GdMap.WindowForms
 
                GMapMarker marker = new GMarkerGoogle(lstPlay[0], GMarkerGoogleType.green);
                marker.ToolTipMode = MarkerTooltipMode.Always;
-               flightWorker.ReportProgress(50, new EventData(0,marker));
+               flightWorker.ReportProgress(50, new EventData(0, marker));
                foreach (PointLatLng pot in lstPlay)
                {
                   marker.Position = pot;
@@ -166,7 +167,8 @@ namespace Demo.GdMap.WindowForms
          // stops immediate marker/route/polygon invalidations;
          // call Refresh to perform single refresh and reset invalidation state
          MainMap.HoldInvalidation = true;
-         try { 
+         try
+         {
             EventData eventData = (EventData)e.UserState;
             if (null != eventData)
             {
@@ -202,7 +204,7 @@ namespace Demo.GdMap.WindowForms
          flightWorker.RunWorkerAsync();
       }
 
-     
+
 
       private void btnDownSelMap_Click(object sender, EventArgs e)
       {
@@ -244,7 +246,7 @@ namespace Demo.GdMap.WindowForms
 
       private void btnGoto_Click(object sender, EventArgs e)
       {
-         char[] sep ={',' };
+         char[] sep = { ',' };
          String[] latLng = tbLatLong.Text.Split(sep);
          markersLay.Markers.Clear();
          try
@@ -262,7 +264,8 @@ namespace Demo.GdMap.WindowForms
          }
       }
 
-      private void mockPointData() {
+      private void mockPointData()
+      {
          this.htPoints.Clear();
          ////第一条线
          RouteData pd = new RouteData("0", "point1");
@@ -281,8 +284,8 @@ namespace Demo.GdMap.WindowForms
 
          ///第二条线
          RouteData pd2 = new RouteData("1", "point2");
-         pd2.addPoint(new PointLatLng(39.891486,116.398442));
-         pd2.addPoint(new PointLatLng(39.892276, 116.404364)); 
+         pd2.addPoint(new PointLatLng(39.891486, 116.398442));
+         pd2.addPoint(new PointLatLng(39.892276, 116.404364));
          pd2.addPoint(new PointLatLng(39.892276, 116.408313));
          pd2.addPoint(new PointLatLng(39.892605, 116.413892));
          pd2.addPoint(new PointLatLng(39.892605, 116.418527));
@@ -300,7 +303,7 @@ namespace Demo.GdMap.WindowForms
 
          this.htPoints.Add(pd2.getId(), pd2);
       }
-      
+
       private void btnSelFile_Click(object sender, EventArgs e)
       {
          OpenFileDialog pOpenFileDialog = new OpenFileDialog();
@@ -327,7 +330,8 @@ namespace Demo.GdMap.WindowForms
          }
       }
 
-      private void decodeFile4Test(string absFile) {
+      private void decodeFile4Test(string absFile)
+      {
          this.htPoints.Clear();
          string line;
          char[] sep = { ',' };
@@ -343,13 +347,15 @@ namespace Demo.GdMap.WindowForms
                RouteData routeData = (RouteData)this.htPoints[result[0]];
                routeData.addPoint(pot);
             }
-            else {
-               RouteData routeData = new RouteData(result[0],"test");
+            else
+            {
+               RouteData routeData = new RouteData(result[0], "test");
                routeData.addPoint(pot);
                this.htPoints.Add(routeData.getId(), routeData);
             }
          }
          file.Close();
+
       }
 
 
