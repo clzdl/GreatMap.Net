@@ -1,6 +1,5 @@
 ﻿using Demo.GdMap.WindowForms.source;
 using Demo.GdMap.WindowsForms;
-using Demo.GdMap.WindowsForms.CustomMarkers;
 using GMap.NET;
 using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
