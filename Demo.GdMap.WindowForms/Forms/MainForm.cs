@@ -28,7 +28,6 @@ namespace Demo.GdMap.WindowForms
       internal readonly GMapOverlay routesLay = new GMapOverlay("routes");
       internal readonly GMapOverlay markersLay = new GMapOverlay("markers"); //放置marker的图层
       BackgroundWorker flightWorker = new BackgroundWorker();      //
-
       Hashtable htPoints = new Hashtable();
       public MainForm()
       {
@@ -110,6 +109,9 @@ namespace Demo.GdMap.WindowForms
          {
             foreach (string key in this.htPoints.Keys)
             {
+               if (flightWorker.CancellationPending) {
+                  break;
+               }
                RouteData routeData = (RouteData)this.htPoints[key];
                List<PointLatLng> lstPlay = routeData.getPoints();
 
@@ -149,7 +151,7 @@ namespace Demo.GdMap.WindowForms
                   marker.Position = pot;
                   marker.ToolTipText = "(lat:" + pot.Lat + ";\n lng:" + pot.Lng + ")";
                   flightWorker.ReportProgress(50, new EventData(0, marker));
-                  Thread.Sleep(500);
+                  Thread.Sleep(300);
                }
             }
          }
@@ -157,7 +159,7 @@ namespace Demo.GdMap.WindowForms
          {
             Debug.WriteLine("flight_DoWork: " + ex.ToString());
          }
-         flightWorker.ReportProgress(100);
+         
       }
 
 
@@ -192,11 +194,17 @@ namespace Demo.GdMap.WindowForms
       void flight_ProgressCompleted(object sender, RunWorkerCompletedEventArgs e)
       {
          this.button1.Enabled = true;
+         this.btnSelFile.Enabled = true;
+         if (e.Cancelled)
+         {
+            MessageBox.Show("任务已取消 ");
+         }
       }
 
       private void button1_Click(object sender, EventArgs e)
       {
          this.button1.Enabled = false;
+         this.btnSelFile.Enabled = false;
          routesLay.Routes.Clear();
          markersLay.Markers.Clear();
          mockPointData();
@@ -308,7 +316,7 @@ namespace Demo.GdMap.WindowForms
          OpenFileDialog pOpenFileDialog = new OpenFileDialog();
 
          //设置对话框标题
-         pOpenFileDialog.Title = "打开shp文件";
+         pOpenFileDialog.Title = "轨迹文件";
          //设置打开文件类型
          pOpenFileDialog.Filter = "所有文件（*.*）|*.*";
          //监测文件是否存在
@@ -321,11 +329,12 @@ namespace Demo.GdMap.WindowForms
             //System.IO.Path.GetFileName(pOpenFileDialog.FileName);                          //得到文件
             //System.IO.Path.GetDirectoryName(pOpenFileDialog.FileName);                  //得到路径
             string absFile = System.IO.Path.GetFullPath(pOpenFileDialog.FileName);/// //绝对路径
-            Debug.WriteLine(absFile);
+            this.tbDecodeFile.Text = absFile;
             decodeFile4Test(absFile);
             routesLay.Routes.Clear();
             markersLay.Markers.Clear();
             flightWorker.RunWorkerAsync();
+              
          }
       }
 
